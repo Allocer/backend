@@ -10,7 +10,7 @@ import scala.concurrent.Future
 object OrderService {
 
   def addOrder(request: Request[JsValue]): OrderResource = {
-    val name = (request.body \ "number").as[String]
+    val name = (request.body \ "name").as[String]
     val description = (request.body \ "email").as[String]
     val price = (request.body \ "amount").as[BigDecimal]
 

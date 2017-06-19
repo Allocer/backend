@@ -13,28 +13,28 @@ import scala.concurrent.{Await, Future}
 
 case class Order(id: Option[Long], number: String, email: String, amount: BigDecimal)
 
-class OrderTableDef(tag: Tag) extends Table[Order](tag, "product") {
+class OrderTableDef(tag: Tag) extends Table[Order](tag, "order") {
 
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
 
-  def number = column[String]("number")
+  def name = column[String]("name")
 
   def email = column[String]("email")
 
   def amount = column[BigDecimal]("amount")
 
   override def * =
-    (id.?, number, email, amount) <> (Order.tupled, Order.unapply)
+    (id.?, name, email, amount) <> (Order.tupled, Order.unapply)
 }
 
-case class OrderResource(id: Option[Long], number: String, email: String, amount: BigDecimal)
+case class OrderResource(id: Option[Long], name: String, email: String, amount: BigDecimal)
 
 object OrderResource {
   implicit val implicitWrites = new Writes[OrderResource] {
     def writes(product: OrderResource): JsValue = {
       Json.obj(
         "id" -> product.id,
-        "number" -> product.number,
+        "name" -> product.name,
         "email" -> product.email,
         "amount" -> product.amount
       )
@@ -45,6 +45,7 @@ object OrderResource {
 object Orders {
 
   val orders = TableQuery[OrderTableDef]
+
   private def db: Database = Database.forDataSource(DB.getDataSource())
 
   def add(order: Order): Order = {
